@@ -45,8 +45,6 @@ model User {
   rooms Room[] @relation("UserCreateRelation")
   room_members RoomMember[]
   room_messages RoomMessage[]
-  
-  password_resets PaswordReset[]
 
   @@map("users")
 }
@@ -58,6 +56,9 @@ model Group {
   photo String
   about String @db.Text
   benefit String[]
+
+  room_id String @unique
+  room Room @relation(fields: [room_id], references: [id])
 
   created_at DateTime @default(now())
 
@@ -77,6 +78,8 @@ model Room {
 
   members RoomMember[]
   message RoomMessage[]
+
+  group Group?
 
   @@map("rooms")
 }
@@ -119,15 +122,4 @@ model RoomMessage {
   created_at DateTime @default(now())
 
   @@map("room_messages")
-}
-
-model PaswordReset {
-  id String @id @default(uuid()) @db.Char(36)
-
-  user_id String
-  user User @relation(fields: [user_id], references: [id])
-
-  token String
-
-  @@map("user_pasword_resets")
 }
